@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+node_modules/
+logs/
+hashcats-miner/.venv/
+.cache/
+__pycache__/
+*.tgz
+*.pem
+id_*
+keys*
+wallets*.json

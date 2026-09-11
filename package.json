@@ -1,0 +1,23 @@
+{
+  "name": "hashcats-gpu-cloud-mining",
+  "version": "1.0.0",
+  "description": "Standalone HashCats (Robinhood Chain) proof-of-work NFT miner: coordinator + untrusted rented-GPU workers.",
+  "type": "module",
+  "engines": {
+    "node": ">=20.12"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "status": "node mine-hashcats.mjs --status-only",
+    "mine": "node mine-hashcats.mjs",
+    "dash": "node hashcats-dash.mjs",
+    "e2e": "node hashcats-e2e-test.mjs"
+  },
+  "dependencies": {
+    "viem": "^2"
+  },
+  "devDependencies": {
+    "vitest": "^2"
+  },
+  "license": "MIT"
+}
