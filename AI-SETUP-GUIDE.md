@@ -75,13 +75,31 @@ id 4663)** with:
 - plus a small gas buffer per attempt (a failed/reverted `mine()` costs gas
   only, refunding the mint value).
 
-Recommend fresh wallets, not ones holding other funds. The user generates
-these themselves (any standard EVM wallet tool works, this repo does not
-include a wallet generator) and funds them by bridging or transferring ETH
-to Robinhood Chain.
+Recommend fresh wallets, not ones holding other funds. The user does this
+themselves in a wallet app; this repo does not generate wallets.
 
-Check: the user confirms the wallet address(es) show a non-zero balance on
-a Robinhood Chain block explorer before continuing.
+1. In a wallet app such as MetaMask or Rabby, create a new account for each
+   cat they plan to mine (the miner uses one wallet per cat, and difficulty
+   rises for an address that mined recently).
+2. Add Robinhood Chain to the wallet, either in one click at
+   https://chainlist.org/chain/4663 or manually with the values from
+   https://docs.robinhood.com/chain/add-network-to-wallet :
+   - Chain ID `4663`, currency `ETH`
+   - RPC `https://rpc.mainnet.chain.robinhood.com`
+   - Explorer `https://robinhoodchain.blockscout.com`
+3. Send ETH to each new address on Robinhood Chain. The canonical bridge
+   from Ethereum is linked from Robinhood's bridging docs
+   (https://docs.robinhood.com/chain/bridging/):
+   https://portal.arbitrum.io/bridge?destinationChain=robinhood-chain&sourceChain=ethereum .
+   Bridging from Ethereum costs Ethereum gas; the bridge shows its estimated
+   time, and the docs also list partner routes.
+4. In step 6 the user exports each new account's private key from the
+   wallet app (account details, show private key) and types it into `.env`
+   themselves. You never see it.
+
+Check: the user looks up each wallet ADDRESS (public and safe to share,
+unlike the key) on https://robinhoodchain.blockscout.com and confirms a
+non-zero ETH balance before continuing.
 
 ### 6. Fill in `.env`
 
@@ -142,9 +160,20 @@ have an SSH host/port:
 
 ```
 cd hashcats-miner/deploy
-./pack.sh          # or pack.ps1 on Windows: builds hashcats-miner.tgz
-./box.sh <ssh-host> <ssh-port> <token> box1     # or box.ps1 on Windows
+
+# macOS / Linux
+bash pack.sh
+bash box.sh <ssh-host> <ssh-port> <token> box1
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy Bypass -File .\pack.ps1
+powershell -ExecutionPolicy Bypass -File .\box.ps1 -SshHost <ssh-host> -Port <ssh-port> -Token <token> -Name box1
 ```
+
+`<ssh-host>` and `<ssh-port>` come from the provider's SSH connection
+details; `<token>` is the coordinator token printed in step 7. `pack`
+builds `hashcats-miner.tgz` at the repo root; run it again after any change
+to `hashcats-miner/`. Use one terminal and a unique name per box.
 
 `box.sh`/`box.ps1` copies the tarball up, runs `setup-box.sh` once, then
 holds a reverse SSH tunnel and the worker in a loop, restarting on drop.
